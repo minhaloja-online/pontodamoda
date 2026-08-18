@@ -9,12 +9,12 @@
    ========================================================== */
 
 export const firebaseConfig = {
-  apiKey:            "SEU_API_KEY",
-  authDomain:        "SEU_PROJETO.firebaseapp.com",
-  projectId:         "SEU_PROJETO",
-  storageBucket:     "SEU_PROJETO.appspot.com",
-  messagingSenderId: "SEU_SENDER_ID",
-  appId:             "SEU_APP_ID"
+  apiKey: "AIzaSyCRS9BtAF-t4Ed3Mv9VnFQ03AqCf_CcXhw",
+  authDomain: "ponto-da-moda-13930.firebaseapp.com",
+  projectId: "ponto-da-moda-13930",
+  storageBucket: "ponto-da-moda-13930.firebasestorage.app",
+  messagingSenderId: "756805621715",
+  appId: "1:756805621715:web:47b294a3373ab302464126"
 };
 
 /* true quando a configuração já foi preenchida de verdade */
