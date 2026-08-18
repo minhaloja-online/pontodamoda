@@ -6,12 +6,14 @@
 import { getFirebase, isConfigured } from "./firebase.js";
 import { DEFAULT_CONFIG, FIELD_SCHEMA, DEFAULT_CATEGORIES, DEFAULT_PRODUCTS } from "./defaults.js";
 import { slugify, esc, BRL } from "./store.js";
+import { enviarImagem } from "./uploader.js";
 
 const $  = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
 
 let fb = null, user = null;
 let config = { ...DEFAULT_CONFIG }, cats = [], prods = [], admins = [];
+let upcfg = { provider:"", ghBranch:"main" };
 
 let toastTimer;
 function toast(msg){
@@ -61,7 +63,12 @@ async function start(){
   $("#btnSair").addEventListener("click", ()=>fb.signOut(fb.auth));
 }
 
-function showLogin(){ $("#loginView").hidden = false; $("#panelView").hidden = true; }
+function showLogin(){
+  const login = $("#loginView");
+  login.hidden = false;
+  login.style.display = "";
+  $("#panelView").hidden = true;
+}
 
 async function autenticar(modo){
   const email = $("#admEmail").value.trim();
@@ -110,8 +117,13 @@ async function ensureAdmin(u){
    PAINEL
    ========================================================== */
 async function abrirPainel(){
-  $("#loginView").hidden = true;
+  const login = $("#loginView");
+  login.hidden = true;
+  login.style.display = "none";
+  $("#admPass").value = "";
+  $("#loginErro").textContent = "";
   $("#panelView").hidden = false;
+  window.scrollTo(0,0);
   $("#admWho").textContent = user.email;
 
   await carregar();
@@ -119,6 +131,7 @@ async function abrirPainel(){
   renderCats();
   renderProds();
   renderAdmins();
+  renderUpload();
 
   $$(".adm-tab").forEach(t=>t.addEventListener("click", ()=>{
     $$(".adm-tab").forEach(x=>x.classList.remove("on"));
@@ -133,6 +146,8 @@ async function abrirPainel(){
   $("#btnNovoProd").addEventListener("click", ()=>formProduto(null));
   $("#btnSeed").addEventListener("click", publicarInicial);
   $("#btnAddAdm").addEventListener("click", liberarAdmin);
+  $("#btnSalvarUp").addEventListener("click", salvarUpload);
+  $("#upProvider").addEventListener("change", e=>{ upcfg.provider = e.target.value; renderUpload(); });
   $("#prodBusca").addEventListener("input", e=>renderProds(e.target.value));
   $$("[data-modal-close]").forEach(b=>b.addEventListener("click", fecharModal));
   document.addEventListener("keydown", e=>{ if(e.key==="Escape") fecharModal(); });
@@ -140,13 +155,15 @@ async function abrirPainel(){
 
 async function carregar(){
   const { db, doc, getDoc, collection, getDocs } = fb;
-  const [c, ct, pr, ad] = await Promise.all([
+  const [c, ct, pr, ad, up] = await Promise.all([
     getDoc(doc(db,"config","site")),
     getDocs(collection(db,"categories")),
     getDocs(collection(db,"products")),
-    getDocs(collection(db,"admins"))
+    getDocs(collection(db,"admins")),
+    getDoc(doc(db,"secrets","upload")).catch(()=>null)
   ]);
   if(c.exists()) config = { ...DEFAULT_CONFIG, ...c.data() };
+  if(up?.exists()) upcfg = { provider:"", ghBranch:"main", ...up.data() };
   cats  = ct.docs.map(d=>({ id:d.id, ...d.data() })).sort((a,b)=>(a.order??99)-(b.order??99));
   prods = pr.docs.map(d=>({ id:d.id, ...d.data() })).sort((a,b)=>(a.order??999)-(b.order??999));
   admins = ad.docs.map(d=>({ id:d.id, ...d.data() }));
@@ -180,23 +197,24 @@ function ligarUploads(root=document){
     inp.dataset.ready = "1";
     inp.addEventListener("change", async e=>{
       const file = e.target.files[0];
+      e.target.value = "";
       if(!file) return;
-      if(file.size > 5*1024*1024){ toast("Imagem muito grande (máx. 5 MB)"); return; }
+      if(!upcfg.provider){
+        toast("Configure o envio de imagens em Ferramentas");
+        return;
+      }
       toast("Enviando foto...");
       try{
-        const path = `site/${Date.now()}_${file.name.replace(/[^\w.\-]/g,"_")}`;
-        const r = fb.ref(fb.storage, path);
-        await fb.uploadBytes(r, file);
-        const url = await fb.getDownloadURL(r);
+        const url = await enviarImagem(file, upcfg);
         const wrap = inp.closest(".imgfield") || inp.closest(".field");
-        const target = wrap.querySelector(`[data-key="${inp.dataset.upload}"]`);
-        if(target) target.value = url;
+        const alvo = wrap.querySelector(`[data-key="${inp.dataset.upload}"]`);
+        if(alvo) alvo.value = url;
         const thumb = wrap.querySelector(".thumb");
         if(thumb) thumb.src = url;
         toast("Foto enviada");
       }catch(err){
         console.error(err);
-        toast("Não deu pra enviar a foto");
+        toast(err.message || "Não deu pra enviar a foto");
       }
     });
   });
@@ -425,6 +443,57 @@ async function publicarInicial(){
     msgIn("#seedMsg","Pronto");
     toast("Conteúdo inicial publicado");
   }catch(err){ console.error(err); toast("Não deu pra publicar"); }
+}
+
+/* ==========================================================
+   ENVIO DE IMAGENS
+   ========================================================== */
+const CAMPOS_UPLOAD = {
+  github: [
+    ["ghOwner","Seu usuário no GitHub","text"],
+    ["ghRepo","Nome do repositório","text"],
+    ["ghBranch","Branch (normalmente main)","text"],
+    ["ghToken","Token de acesso (fine-grained, com permissão Contents: Read and write)","text"]
+  ],
+  cloudinary: [
+    ["cloudName","Cloud name","text"],
+    ["preset","Upload preset (não assinado)","text"],
+    ["pasta","Pasta dentro do Cloudinary (opcional)","text"]
+  ],
+  imgbb: [
+    ["imgbbKey","Chave da API","text"]
+  ]
+};
+
+function renderUpload(){
+  const sel = $("#upProvider");
+  if(sel.value !== (upcfg.provider||"")) sel.value = upcfg.provider || "";
+  const campos = CAMPOS_UPLOAD[upcfg.provider] || [];
+  $("#upFields").innerHTML = campos.length
+    ? `<div class="grid2">${campos.map(([k,l,t])=>campoHTML("up_"+k,l,t,upcfg[k])).join("")}</div>`
+    : `<p class="lede" style="font-size:13px">Escolha acima onde as fotos vão ficar guardadas.</p>`;
+  $("#upDica").innerHTML = {
+    github: "As fotos entram na pasta <b>/img</b> do próprio repositório e são servidas pelo GitHub. Crie o token em github.com/settings/tokens (fine-grained), com acesso apenas a este repositório e permissão <b>Contents: Read and write</b>.",
+    cloudinary: "Crie a conta em cloudinary.com. Em <b>Settings → Upload → Upload presets</b>, adicione um preset com <b>Signing Mode: Unsigned</b> e cole o nome dele aqui.",
+    imgbb: "Crie a conta em imgbb.com e pegue a chave em api.imgbb.com. É o caminho mais rápido, mas o menos controlado — bom para começar.",
+    "": ""
+  }[upcfg.provider || ""] || "";
+  ligarUploads($("#tab-ferramentas"));
+}
+
+async function salvarUpload(){
+  const dados = { provider: $("#upProvider").value };
+  (CAMPOS_UPLOAD[dados.provider] || []).forEach(([k])=>{
+    const el = $(`[data-key="up_${k}"]`);
+    if(el) dados[k] = el.value.trim();
+  });
+  try{
+    await fb.setDoc(fb.doc(fb.db,"secrets","upload"), dados, { merge:true });
+    upcfg = { ...upcfg, ...dados };
+    renderUpload();
+    msgIn("#upMsg","Salvo");
+    toast("Envio de imagens configurado");
+  }catch(err){ console.error(err); toast("Não deu pra salvar"); }
 }
 
 /* ==========================================================

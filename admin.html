@@ -107,6 +107,23 @@
       <p style="margin-top:20px"><button class="btn btn--gold" id="btnSeed">Publicar conteúdo inicial</button> <span class="adm-msg" id="seedMsg"></span></p>
     </div>
     <div class="adm-group">
+      <h3>Envio de imagens</h3>
+      <p class="lede" style="font-size:13px;margin:-12px 0 20px">Onde as fotos enviadas pelo painel ficam guardadas. Você também pode simplesmente colar o endereço de uma imagem em qualquer campo de foto, sem configurar nada aqui.</p>
+      <div class="field">
+        <label>Serviço</label>
+        <select id="upProvider">
+          <option value="">— escolher —</option>
+          <option value="github">GitHub (pasta /img do repositório)</option>
+          <option value="cloudinary">Cloudinary (25 GB grátis)</option>
+          <option value="imgbb">ImgBB (mais simples)</option>
+        </select>
+      </div>
+      <div id="upFields"></div>
+      <p class="lede" style="font-size:12px" id="upDica"></p>
+      <p style="margin-top:20px"><button class="btn btn--gold" id="btnSalvarUp">Salvar</button> <span class="adm-msg" id="upMsg"></span></p>
+    </div>
+
+    <div class="adm-group">
       <h3>Administradores</h3>
       <p class="lede" style="font-size:13px">Quem tem acesso a este painel. Para liberar mais alguém, peça para a pessoa criar a conta no Firebase Console (Authentication) e adicione o UID dela aqui.</p>
       <table class="adm-table"><thead><tr><th>E-mail</th><th>UID</th><th></th></tr></thead><tbody id="admRows"></tbody></table>

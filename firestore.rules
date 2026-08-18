@@ -43,6 +43,11 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    // Credenciais do serviço de imagens: só o administrador lê e escreve
+    match /secrets/{doc} {
+      allow read, write: if isAdmin();
+    }
+
     // Nada além do que está acima
     match /{document=**} {
       allow read, write: if false;

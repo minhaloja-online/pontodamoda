@@ -5,26 +5,24 @@ import { firebaseConfig, isConfigured } from "./config.js";
 
 export { isConfigured };
 
-let app = null, db = null, auth = null, storage = null, sdk = null;
+let app = null, db = null, auth = null, sdk = null;
 
 export async function getFirebase(){
   if(!isConfigured) return null;
-  if(app) return { app, db, auth, storage, ...sdk };
+  if(app) return { app, db, auth, ...sdk };
 
   const V = "10.12.5";
   const base = `https://www.gstatic.com/firebasejs/${V}`;
 
-  const [core, fs, au, st] = await Promise.all([
+  const [core, fs, au] = await Promise.all([
     import(`${base}/firebase-app.js`),
     import(`${base}/firebase-firestore.js`),
-    import(`${base}/firebase-auth.js`),
-    import(`${base}/firebase-storage.js`)
+    import(`${base}/firebase-auth.js`)
   ]);
 
-  app     = core.initializeApp(firebaseConfig);
-  db      = fs.getFirestore(app);
-  auth    = au.getAuth(app);
-  storage = st.getStorage(app);
+  app  = core.initializeApp(firebaseConfig);
+  db   = fs.getFirestore(app);
+  auth = au.getAuth(app);
 
   sdk = {
     // firestore
@@ -35,10 +33,8 @@ export async function getFirebase(){
     // auth
     signInWithEmailAndPassword: au.signInWithEmailAndPassword,
     createUserWithEmailAndPassword: au.createUserWithEmailAndPassword,
-    signOut: au.signOut, onAuthStateChanged: au.onAuthStateChanged,
-    // storage
-    ref: st.ref, uploadBytes: st.uploadBytes, getDownloadURL: st.getDownloadURL
+    signOut: au.signOut, onAuthStateChanged: au.onAuthStateChanged
   };
 
-  return { app, db, auth, storage, ...sdk };
+  return { app, db, auth, ...sdk };
 }

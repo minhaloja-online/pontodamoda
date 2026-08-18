@@ -20,9 +20,10 @@ JavaScript puro. O conteúdo fica no Firebase e é editado pelo próprio site.
 │       ├── site.js         carrinho, quick view, animações
 │       ├── home.js         página inicial
 │       ├── catalogo.js     catálogo
-│       └── admin.js        painel
+│       ├── admin.js        painel
+│       └── uploader.js     envio de fotos (GitHub, Cloudinary ou ImgBB)
+├── img/                    fotos, quando o envio for pelo GitHub
 ├── firestore.rules         permissões do banco
-├── storage.rules           permissões das fotos
 ├── firebase.json
 └── .github/workflows/deploy-pages.yml
 ```
@@ -53,11 +54,13 @@ minutos o site fica no ar em `https://SEU_USUARIO.github.io/ponto-da-moda/`.
 
 1. Acesse **console.firebase.google.com** e crie um projeto.
 2. **Criação → Firestore Database → Criar banco de dados** (modo de produção).
-3. **Criação → Storage → Começar** (é onde ficam as fotos enviadas pelo painel).
-4. **Criação → Authentication → Começar → E-mail/senha → Ativar**.
-5. **Configurações do projeto → Seus apps → Web (`</>`)**, registre o app e copie
+3. **Criação → Authentication → Começar → E-mail/senha → Ativar**.
+4. **Configurações do projeto → Seus apps → Web (`</>`)**, registre o app e copie
    o objeto `firebaseConfig`.
-6. Cole esses valores em `assets/js/config.js`, salve e envie para o GitHub:
+5. Cole esses valores em `assets/js/config.js`, salve e envie para o GitHub:
+
+> O **Firebase Storage não é usado** neste projeto, justamente porque hoje ele
+> exige o plano Blaze com cartão. As fotos ficam em outro lugar — veja a seção 6.
 
 ```bash
 git add assets/js/config.js && git commit -m "Configura Firebase" && git push
@@ -79,7 +82,7 @@ console (Firestore → Regras e Storage → Regras) ou usar a linha de comando:
 npm install -g firebase-tools
 firebase login
 firebase use --add            # escolha o seu projeto
-firebase deploy --only firestore:rules,storage:rules
+firebase deploy --only firestore:rules
 ```
 
 O que as regras garantem:
@@ -87,7 +90,9 @@ O que as regras garantem:
 - qualquer visitante **lê** o conteúdo do site;
 - só quem está na coleção `admins` **escreve** qualquer coisa;
 - o registro de administrador só pode ser criado **uma vez** sem já ser admin —
-  é o que faz o primeiro acesso virar dono e trancar a porta depois.
+  é o que faz o primeiro acesso virar dono e trancar a porta depois;
+- a coleção `secrets`, onde ficam as credenciais do envio de fotos, **não é
+  legível por visitantes** — só por quem está em `admins`.
 
 ---
 
@@ -116,14 +121,49 @@ Para liberar outra pessoa depois: peça para ela criar a conta em
 | **Conteúdo** | Todos os textos do site, fotos de fundo, número do WhatsApp, link do Instagram, endereço do mapa, horários, rodapé |
 | **Categorias** | Nome, foto, descrição e ordem das categorias do menu e da página inicial |
 | **Produtos** | Cadastro completo: fotos, preço, preço antigo, cores, tamanhos, selo, descrição, se aparece na home e se é oferta |
-| **Ferramentas** | Publicar conteúdo inicial e gerenciar quem tem acesso ao painel |
-
-As fotos podem ser coladas como endereço ou enviadas direto pelo painel — nesse
-caso vão para o Storage do Firebase.
+| **Ferramentas** | Envio de imagens, conteúdo inicial e quem tem acesso ao painel |
 
 ---
 
-## 6. Como o site é organizado
+## 6. Onde ficam as fotos
+
+Em qualquer campo de foto você pode **colar o endereço de uma imagem** e pronto —
+isso funciona sem configurar nada. Para enviar fotos direto do celular ou do
+computador pelo painel, escolha um dos três caminhos em **Ferramentas → Envio de
+imagens**. Todos são gratuitos e nenhum pede cartão.
+
+Antes de subir, a foto é redimensionada para no máximo 1600px e convertida para
+WebP dentro do próprio navegador. Uma foto de 4 MB do celular costuma virar algo
+entre 150 e 300 KB.
+
+### GitHub — recomendado
+
+As fotos entram na pasta `img/` do próprio repositório, junto com o site. Não
+precisa de mais nenhuma conta, não tem limite prático para uma loja e as imagens
+ficam versionadas com o resto do projeto.
+
+1. Vá em **github.com/settings/tokens → Fine-grained tokens → Generate new token**.
+2. Em *Repository access*, escolha **apenas** o repositório do site.
+3. Em *Permissions → Repository permissions*, marque **Contents: Read and write**.
+4. Copie o token e cole no painel, junto com seu usuário e o nome do repositório.
+
+O token fica salvo no Firestore, numa coleção que só o administrador consegue
+ler. Ainda assim, dê a ele acesso só a este repositório e troque se vazar.
+
+### Cloudinary
+
+25 GB grátis e entrega otimizada. Crie a conta, vá em **Settings → Upload →
+Upload presets**, adicione um preset com **Signing Mode: Unsigned** e cole no
+painel o *cloud name* e o nome do preset. O preset não assinado foi feito
+justamente para envio direto do navegador, então não há segredo exposto.
+
+### ImgBB
+
+O mais rápido de configurar: crie a conta em imgbb.com, pegue a chave em
+api.imgbb.com e cole no painel. Bom para começar, mas é o que dá menos controle
+sobre as imagens depois.
+
+## 7. Como o site é organizado
 
 - **Página inicial** — apresentação da loja, categorias, seleção da semana,
   ofertas e chamadas para o catálogo completo.
