@@ -1,0 +1,51 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function bootstrapDone() {
+      return exists(/databases/$(database)/documents/meta/bootstrap);
+    }
+
+    // Conteúdo do site: qualquer visitante lê, só admin escreve
+    match /config/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /categories/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /products/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Marca que o primeiro administrador já foi criado.
+    // Só pode ser criado uma vez, e só junto com o próprio admin.
+    match /meta/{doc} {
+      allow read: if true;
+      allow create: if request.auth != null && !bootstrapDone();
+      allow update, delete: if isAdmin();
+    }
+
+    // Lista de administradores.
+    // O primeiro acesso cria o próprio registro; depois disso, só admin mexe.
+    match /admins/{uid} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && (request.auth.uid == uid && !bootstrapDone() || isAdmin());
+      allow update, delete: if isAdmin();
+    }
+
+    // Nada além do que está acima
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
