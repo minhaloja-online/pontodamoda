@@ -267,6 +267,18 @@ export function mountShell(){
   renderCart();
   paintFavs();
 
+  /* logo do topo e ícone da aba */
+  const LOGO_PADRAO = "img/logo-ponto-da-moda.png";
+  const logo = cfg("brand.logo");
+  $$(".brand-logo").forEach(img=>{
+    if(logo){ img.src = logo; img.alt = cfg("brand.name"); }
+    else img.removeAttribute("src");
+  });
+  if(logo && logo !== LOGO_PADRAO){
+    const fav = $("#favicon");
+    if(fav) fav.href = logo;
+  }
+
   const waFloat = $("#waFloat");
   if(waFloat) waFloat.href = waLink(`Olá! Vim pelo site da ${cfg("brand.name")} e tenho interesse em uma peça.`);
 

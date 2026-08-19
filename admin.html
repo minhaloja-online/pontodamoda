@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Administração — Ponto da Moda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="img/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" id="favicon">
+<link rel="apple-touch-icon" href="img/logo-180.png">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="adm-login" id="loginView">
+  <div class="adm-card">
+    <h2>Área do administrador</h2>
+    <p class="lede" id="loginLede">Entre para editar o site.</p>
+
+    <div class="field">
+      <label for="admEmail">E-mail</label>
+      <input type="email" id="admEmail" autocomplete="email" placeholder="voce@email.com">
+    </div>
+    <div class="field">
+      <label for="admPass">Senha</label>
+      <input type="password" id="admPass" autocomplete="current-password" placeholder="mínimo 6 caracteres">
+    </div>
+
+    <div style="display:grid;gap:10px;margin-top:22px">
+      <button class="btn btn--gold" id="btnEntrar">Entrar</button>
+      <button class="btn" id="btnCriar">Criar acesso</button>
+    </div>
+
+    <p class="adm-error" id="loginErro"></p>
+
+    <div class="adm-note" id="bootNote" hidden>
+      Nenhum administrador cadastrado ainda. A primeira conta criada aqui vira a administradora do site — depois disso, ninguém mais consegue se cadastrar sozinho.
+    </div>
+
+    <p style="margin-top:24px"><a class="admin-dot" href="index.html">← Voltar para o site</a></p>
+  </div>
+</div>
+
+<!-- PAINEL -->
+<div class="adm-shell" id="panelView" hidden>
+
+  <div class="adm-top">
+    <div>
+      <h1>PONTO DA MODA</h1>
+      <p class="adm-who" id="admWho"></p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="tiny" href="index.html" target="_blank">Ver o site</a>
+      <button class="tiny" id="btnSair">Sair</button>
+    </div>
+  </div>
+
+  <div class="adm-tabs">
+    <button class="adm-tab on" data-tab="conteudo">Conteúdo</button>
+    <button class="adm-tab" data-tab="categorias">Categorias</button>
+    <button class="adm-tab" data-tab="produtos">Produtos</button>
+    <button class="adm-tab" data-tab="ferramentas">Ferramentas</button>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <section class="adm-panel" id="tab-conteudo">
+    <div id="cfgGroups"></div>
+    <div class="adm-group">
+      <h3>Fotos do Instagram</h3>
+      <div id="igFields"></div>
+    </div>
+    <div class="adm-bar">
+      <button class="btn btn--gold" id="btnSalvarCfg">Salvar conteúdo</button>
+      <span class="adm-msg" id="cfgMsg"></span>
+    </div>
+  </section>
+
+  <!-- CATEGORIAS -->
+  <section class="adm-panel" id="tab-categorias" hidden>
+    <div class="adm-group">
+      <h3>Categorias do menu e do catálogo</h3>
+      <p class="lede" style="font-size:13px;margin:-12px 0 20px">A ordem aqui é a ordem que aparece no topo do site e nos blocos da página inicial.</p>
+      <table class="adm-table"><thead><tr><th></th><th>Nome</th><th>Endereço</th><th>Ordem</th><th></th></tr></thead><tbody id="catRows"></tbody></table>
+      <p style="margin-top:22px"><button class="btn" id="btnNovaCat">Adicionar categoria</button></p>
+    </div>
+  </section>
+
+  <!-- PRODUTOS -->
+  <section class="adm-panel" id="tab-produtos" hidden>
+    <div class="adm-group">
+      <h3>Produtos</h3>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px">
+        <input type="text" id="prodBusca" placeholder="Buscar produto" style="flex:1;min-width:200px;background:var(--ink);border:1px solid rgba(242,239,233,.16);border-radius:8px;color:var(--bone);font-family:var(--ui);padding:12px 14px">
+        <button class="btn btn--gold" id="btnNovoProd">Novo produto</button>
+      </div>
+      <table class="adm-table"><thead><tr><th></th><th>Produto</th><th>Categoria</th><th>Preço</th><th>Marcadores</th><th></th></tr></thead><tbody id="prodRows"></tbody></table>
+    </div>
+  </section>
+
+  <!-- FERRAMENTAS -->
+  <section class="adm-panel" id="tab-ferramentas" hidden>
+    <div class="adm-group">
+      <h3>Conteúdo inicial</h3>
+      <p class="lede" style="font-size:13px">Copia para o banco os textos, categorias e produtos de exemplo que já vêm no site. Use uma vez, no começo. Isso não apaga o que já existe: textos são mesclados e produtos só são criados se ainda não houver nenhum.</p>
+      <p style="margin-top:20px"><button class="btn btn--gold" id="btnSeed">Publicar conteúdo inicial</button> <span class="adm-msg" id="seedMsg"></span></p>
+    </div>
+    <div class="adm-group">
+      <h3>Envio de imagens</h3>
+      <p class="lede" style="font-size:13px;margin:-12px 0 20px">Onde as fotos enviadas pelo painel ficam guardadas. Você também pode simplesmente colar o endereço de uma imagem em qualquer campo de foto, sem configurar nada aqui.</p>
+      <div class="field">
+        <label>Serviço</label>
+        <select id="upProvider">
+          <option value="">— escolher —</option>
+          <option value="github">GitHub (pasta /img do repositório)</option>
+          <option value="cloudinary">Cloudinary (25 GB grátis)</option>
+          <option value="imgbb">ImgBB (mais simples)</option>
+        </select>
+      </div>
+      <div id="upFields"></div>
+      <p class="lede" style="font-size:12px" id="upDica"></p>
+      <p style="margin-top:20px"><button class="btn btn--gold" id="btnSalvarUp">Salvar</button> <span class="adm-msg" id="upMsg"></span></p>
+    </div>
+
+    <div class="adm-group">
+      <h3>Administradores</h3>
+      <p class="lede" style="font-size:13px">Quem tem acesso a este painel. Para liberar mais alguém, peça para a pessoa criar a conta no Firebase Console (Authentication) e adicione o UID dela aqui.</p>
+      <table class="adm-table"><thead><tr><th>E-mail</th><th>UID</th><th></th></tr></thead><tbody id="admRows"></tbody></table>
+      <div class="grid2" style="margin-top:20px">
+        <div class="field"><label>UID da pessoa</label><input type="text" id="novoAdmUid" placeholder="cole o UID do Firebase Authentication"></div>
+        <div class="field"><label>E-mail (só para você identificar)</label><input type="text" id="novoAdmEmail" placeholder="pessoa@email.com"></div>
+      </div>
+      <button class="btn" id="btnAddAdm">Liberar acesso</button>
+    </div>
+  </section>
+</div>
+
+<!-- MODAL DE PRODUTO / CATEGORIA -->
+<div class="modal" id="modal">
+  <div class="modal-bg" data-modal-close></div>
+  <div class="modal-card" id="modalCard"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>

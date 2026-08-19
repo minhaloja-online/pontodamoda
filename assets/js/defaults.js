@@ -8,6 +8,7 @@
 
 export const DEFAULT_CONFIG = {
   "brand.name": "PONTO DA MODA",
+  "brand.logo": "img/logo-ponto-da-moda.png",
 
   "hero.eyebrow": "Ponto da Moda",
   "hero.title1": "SEU ESTILO",
@@ -47,7 +48,7 @@ export const DEFAULT_CONFIG = {
   "campanha.l3": "COMEÇA.",
   "campanha.lede": "Novas peças chegando toda semana na loja do Cipoal. Vem ver antes de todo mundo.",
   "campanha.cta": "Descobrir novidades",
-  "campanha.image": "https://picsum.photos/seed/pdm-camp/1800/1200",
+  "campanha.image": "img/campanha-nova-fase.webp",
 
   "ofertas.eyebrow": "Ofertas especiais",
   "ofertas.title": "PREÇO DE VIRADA",
@@ -100,6 +101,7 @@ export const DEFAULT_CONFIG = {
 export const FIELD_SCHEMA = [
   { group: "Marca e contato", fields: [
     ["brand.name", "Nome da marca", "text"],
+    ["brand.logo", "Logo (canto do topo e aba do navegador) — use PNG redondo com fundo transparente", "image"],
     ["contato.whatsapp", "WhatsApp (só números, com 55 e DDD)", "text"],
     ["contato.whatsappLabel", "WhatsApp como aparece escrito", "text"],
     ["contato.instagram", "URL do Instagram", "url"],

@@ -132,6 +132,7 @@ async function abrirPainel(){
   renderProds();
   renderAdmins();
   renderUpload();
+  avisoConteudo();
 
   $$(".adm-tab").forEach(t=>t.addEventListener("click", ()=>{
     $$(".adm-tab").forEach(x=>x.classList.remove("on"));
@@ -169,6 +170,23 @@ async function carregar(){
   admins = ad.docs.map(d=>({ id:d.id, ...d.data() }));
 }
 
+function avisoConteudo(){
+  let box = $("#admAviso");
+  if(!box){
+    box = document.createElement("div");
+    box.id = "admAviso";
+    box.className = "adm-note";
+    box.style.margin = "0 0 24px";
+    $(".adm-tabs").after(box);
+  }
+  const faltando = [];
+  if(!cats.length)  faltando.push("categorias");
+  if(!prods.length) faltando.push("produtos");
+  if(!faltando.length){ box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = `Ainda não há <b>${faltando.join(" nem ")}</b> no banco de dados. Enquanto isso o site exibe o conteúdo de exemplo, que não pode ser editado por aqui. Vá em <b>Ferramentas → Publicar conteúdo inicial</b> ou crie os itens na aba correspondente.`;
+}
+
 /* ==========================================================
    CAMPOS
    ========================================================== */
@@ -184,14 +202,37 @@ function campoHTML(key, label, tipo, valor){
         <input type="text" data-key="${key}" value="${v}" placeholder="cole o endereço da imagem">
         <div class="uploader">
           <label class="upbtn">Enviar foto<input type="file" accept="image/*" data-upload="${key}"></label>
-          <small>JPG ou WebP, até 5 MB</small>
+          <button type="button" class="upbtn" data-limpar="${key}">Remover</button>
         </div>
+        <small>Envie a foto ou cole o endereço direto de uma imagem (.jpg, .png, .webp)</small>
       </div>
     </div>`;
   return `<div class="field"><label>${esc(label)}</label><input type="${tipo==="url"?"url":"text"}" data-key="${key}" value="${v}"></div>`;
 }
 
 function ligarUploads(root=document){
+  /* a miniatura acompanha o que estiver escrito no campo */
+  $$(".imgfield [data-key]", root).forEach(campo=>{
+    if(campo.dataset.preview) return;
+    campo.dataset.preview = "1";
+    const thumb = campo.closest(".imgfield").querySelector(".thumb");
+    campo.addEventListener("input", ()=>{ if(thumb) thumb.src = campo.value.trim(); });
+  });
+
+  /* botão remover */
+  $$("[data-limpar]", root).forEach(btn=>{
+    if(btn.dataset.ready) return;
+    btn.dataset.ready = "1";
+    btn.addEventListener("click", ()=>{
+      const wrap = btn.closest(".imgfield");
+      const alvo = wrap.querySelector(`[data-key="${btn.dataset.limpar}"]`);
+      if(alvo) alvo.value = "";
+      const thumb = wrap.querySelector(".thumb");
+      if(thumb) thumb.removeAttribute("src");
+      toast("Foto removida — salve para confirmar");
+    });
+  });
+
   $$("[data-upload]", root).forEach(inp=>{
     if(inp.dataset.ready) return;
     inp.dataset.ready = "1";
@@ -267,10 +308,24 @@ function renderCats(){
         <button class="tiny" data-editcat="${c.id}">Editar</button>
         <button class="tiny tiny--danger" data-delcat="${c.id}">Excluir</button>
       </td>
-    </tr>`).join("") || `<tr><td colspan="5" style="color:var(--smoke)">Nenhuma categoria ainda.</td></tr>`;
+    </tr>`).join("") || `<tr><td colspan="5">
+        <p style="color:var(--smoke);margin:0 0 14px">Nenhuma categoria cadastrada. Enquanto isso, o site mostra as categorias de exemplo — e por isso as fotos não mudam.</p>
+        <button class="btn btn--gold" id="btnCriarPadrao">Criar as categorias padrão</button>
+      </td></tr>`;
 
+  $("#btnCriarPadrao")?.addEventListener("click", criarCategoriasPadrao);
   $$("[data-editcat]").forEach(b=>b.onclick = ()=>formCategoria(cats.find(c=>c.id===b.dataset.editcat)));
   $$("[data-delcat]").forEach(b=>b.onclick = ()=>excluir("categories", b.dataset.delcat, "categoria"));
+}
+
+async function criarCategoriasPadrao(){
+  try{
+    toast("Criando categorias...");
+    for(const c of DEFAULT_CATEGORIES) await fb.addDoc(fb.collection(fb.db,"categories"), c);
+    await carregar();
+    renderCats(); renderProds(); avisoConteudo();
+    toast("Categorias criadas — agora dá pra trocar as fotos");
+  }catch(err){ console.error(err); toast("Não deu pra criar as categorias"); }
 }
 
 function formCategoria(c){
