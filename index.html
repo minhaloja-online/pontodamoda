@@ -12,6 +12,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;1,6..96,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="img/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" id="favicon">
+<link rel="apple-touch-icon" href="img/logo-180.png">
+<meta name="theme-color" content="#0A0A0B">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -24,7 +28,10 @@
 <!-- HEADER -->
 <header class="hdr" id="hdr">
   <div class="wrap hdr-in">
-    <a href="index.html" class="brand" data-bind="brand.name">PONTO DA MODA</a>
+    <a href="index.html" class="brand">
+      <img class="brand-logo" src="img/logo-ponto-da-moda.png" alt="">
+      <span data-bind="brand.name">PONTO DA MODA</span>
+    </a>
     <nav class="nav" id="navCats" aria-label="Categorias"></nav>
     <div class="hdr-act">
       <button class="icon-btn" data-open="search" aria-label="Buscar produtos">
@@ -330,7 +337,7 @@
 <div class="sheet" id="sheet-menu">
   <div class="menu-panel" role="dialog" aria-label="Menu">
     <div class="panel-top">
-      <span class="brand" data-bind="brand.name">PONTO DA MODA</span>
+      <span class="brand"><img class="brand-logo" src="img/logo-ponto-da-moda.png" alt=""><span data-bind="brand.name">PONTO DA MODA</span></span>
       <button class="icon-btn" data-close aria-label="Fechar menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <nav class="menu-list" id="menuCats"></nav>
