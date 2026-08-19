@@ -374,9 +374,10 @@ h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:.92;let
 .ft-cols ul{list-style:none;margin:0;padding:0;display:grid;gap:11px;}
 .ft-cols a{font-size:14px;color:rgba(242,239,233,.78);transition:color .35s ease,padding-left .35s var(--ease-out);display:inline-block;}
 .ft-cols a:hover{color:var(--gold);padding-left:6px;}
-.ft-base{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
-  margin-top:clamp(44px,5vw,70px);padding-block:26px;border-top:1px solid rgba(242,239,233,.09);
+.ft-base{display:flex;justify-content:space-between;align-items:center;gap:16px 26px;flex-wrap:wrap;
+  margin-top:clamp(44px,5vw,70px);padding:26px 100px 26px 0;border-top:1px solid rgba(242,239,233,.09);
   font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke);}
+.ft-base .admin-dot{order:-1;margin-right:auto;}
 
 /* WHATSAPP FLUTUANTE */
 .wa{
@@ -519,7 +520,8 @@ h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:.92;let
   .offers{grid-template-columns:1fr;}
   .insta{grid-template-columns:repeat(3,1fr);}
   .ft-cols{grid-template-columns:1fr 1fr;gap:26px;}
-  .ft-base{justify-content:center;text-align:center;font-size:10px;}
+  .ft-base{justify-content:center;text-align:center;font-size:10px;padding:26px 0 8px;}
+  .ft-base .admin-dot{order:99;margin:6px auto 0;}
   .sec{padding-block:clamp(64px,12vw,90px);}
 
   .tabbar{
@@ -584,8 +586,12 @@ h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:.92;let
 .band p{margin:12px 0 0;}
 
 /* LINK DISCRETO DO ADMIN */
-.admin-dot{color:rgba(143,138,129,.45);font-size:10px;letter-spacing:.18em;text-transform:uppercase;transition:color .4s ease;}
-.admin-dot:hover{color:var(--gold);}
+.admin-dot{
+  display:inline-grid;place-items:center;width:30px;height:30px;margin-left:-9px;
+  color:rgba(143,138,129,.4);font-size:15px;line-height:1;border-radius:50%;
+  transition:color .4s ease,background .4s ease;
+}
+.admin-dot:hover{color:var(--gold);background:rgba(242,239,233,.05);}
 
 @media(max-width:720px){
   .inner{padding-top:96px;}
