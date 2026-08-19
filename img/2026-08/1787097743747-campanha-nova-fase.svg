@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1200" width="1800" height="1200" role="img" aria-label="Fundo de campanha: luz dourada nascendo atras de um tecido escuro">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#100E0E"/>
+      <stop offset="0.38" stop-color="#171313"/>
+      <stop offset="0.72" stop-color="#241A15"/>
+      <stop offset="1"    stop-color="#2E2016"/>
+    </linearGradient>
+
+    <radialGradient id="alvorada" cx="0.5" cy="1.12" r="0.98">
+      <stop offset="0"    stop-color="#FFEFC6" stop-opacity="0.88"/>
+      <stop offset="0.14" stop-color="#E8CE8C" stop-opacity="0.62"/>
+      <stop offset="0.30" stop-color="#C9A24B" stop-opacity="0.40"/>
+      <stop offset="0.50" stop-color="#8F6D26" stop-opacity="0.24"/>
+      <stop offset="0.74" stop-color="#5E4718" stop-opacity="0.11"/>
+      <stop offset="1"    stop-color="#3A2C10" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="halo" cx="0.5" cy="0.99" r="0.5">
+      <stop offset="0"   stop-color="#F5E3B4" stop-opacity="0.34"/>
+      <stop offset="0.5" stop-color="#C9A24B" stop-opacity="0.08"/>
+      <stop offset="1"   stop-color="#C9A24B" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="frio" cx="0.06" cy="0.1" r="0.75">
+      <stop offset="0" stop-color="#6E6675" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#6E6675" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="cortinaEsq" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#0A0908" stop-opacity="0.96"/>
+      <stop offset="0.55" stop-color="#0A0908" stop-opacity="0.62"/>
+      <stop offset="1"   stop-color="#0A0908" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="cortinaDir" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0"   stop-color="#0A0908" stop-opacity="0.96"/>
+      <stop offset="0.55" stop-color="#0A0908" stop-opacity="0.62"/>
+      <stop offset="1"   stop-color="#0A0908" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="teto" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#000000" stop-opacity="0.72"/>
+      <stop offset="0.22" stop-color="#000000" stop-opacity="0.36"/>
+      <stop offset="0.46" stop-color="#000000" stop-opacity="0.12"/>
+      <stop offset="0.70" stop-color="#000000" stop-opacity="0.22"/>
+      <stop offset="1"    stop-color="#000000" stop-opacity="0.30"/>
+    </linearGradient>
+
+    <radialGradient id="leito" cx="0.5" cy="0.5" r="0.66">
+      <stop offset="0"   stop-color="#000000" stop-opacity="0.30"/>
+      <stop offset="0.6" stop-color="#000000" stop-opacity="0.15"/>
+      <stop offset="1"   stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="vinheta" cx="0.5" cy="0.46" r="0.82">
+      <stop offset="0.5" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1"   stop-color="#000000" stop-opacity="0.56"/>
+    </radialGradient>
+
+    <linearGradient id="fio" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#C9A24B" stop-opacity="0"/>
+      <stop offset="0.22" stop-color="#F0DCA6" stop-opacity="0.9"/>
+      <stop offset="0.6"  stop-color="#F0DCA6" stop-opacity="0.7"/>
+      <stop offset="1"    stop-color="#C9A24B" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="fioCurto" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#C9A24B" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#C9A24B" stop-opacity="0.45"/>
+      <stop offset="1"   stop-color="#C9A24B" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="dobra" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0"   stop-color="#F0DCA6" stop-opacity="0.10"/>
+      <stop offset="0.55" stop-color="#F0DCA6" stop-opacity="0.05"/>
+      <stop offset="1"   stop-color="#F0DCA6" stop-opacity="0"/>
+    </linearGradient>
+
+    <pattern id="trama" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(22)">
+      <path d="M0 0.5H6" stroke="#F2EFE9" stroke-opacity="0.05" stroke-width="0.65"/>
+    </pattern>
+
+    <filter id="grao" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="11" result="r"/>
+      <feColorMatrix in="r" type="saturate" values="0"/>
+    </filter>
+
+    <clipPath id="quadro"><rect width="1800" height="1200"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#quadro)">
+    <rect width="1800" height="1200" fill="url(#base)"/>
+
+    <!-- a luz nascendo no horizonte -->
+    <rect width="1800" height="1200" fill="url(#alvorada)"/>
+    <rect width="1800" height="1200" fill="url(#halo)"/>
+    <rect width="1800" height="1200" fill="url(#frio)"/>
+
+    <!-- dobras do tecido subindo do rodape -->
+    <g>
+      <path d="M0 1200 C 250 950, 330 720, 296 400 L 210 400 C 250 720, 150 960, -60 1200 Z" fill="url(#dobra)"/>
+      <path d="M1800 1200 C 1560 960, 1486 740, 1520 430 L 1606 430 C 1572 740, 1660 970, 1860 1200 Z" fill="url(#dobra)"/>
+      <path d="M470 1200 C 560 980, 590 800, 566 560" fill="none" stroke="#F2EFE9" stroke-opacity="0.05" stroke-width="1.3"/>
+      <path d="M1330 1200 C 1246 990, 1218 810, 1242 570" fill="none" stroke="#F2EFE9" stroke-opacity="0.05" stroke-width="1.3"/>
+      <path d="M120 1200 C 250 940, 300 700, 276 470" fill="none" stroke="#F2EFE9" stroke-opacity="0.035" stroke-width="1"/>
+      <path d="M1690 1200 C 1556 950, 1512 720, 1536 490" fill="none" stroke="#F2EFE9" stroke-opacity="0.035" stroke-width="1"/>
+    </g>
+
+    <!-- fio de corte: a assinatura da marca -->
+    <rect x="330" y="843" width="1090" height="2.4" fill="url(#fio)" opacity="0.5"/>
+    <rect x="330" y="844" width="1090" height="1" fill="url(#fio)"/>
+    <circle cx="1420" cy="844.5" r="3.4" fill="#F7E9C2" opacity="0.9"/>
+    <rect x="660" y="912" width="480" height="1" fill="url(#fioCurto)"/>
+
+    <!-- poeira em suspensao -->
+    <g fill="#F7E9C2">
+      <circle cx="520"  cy="702" r="2.4" opacity="0.42"/>
+      <circle cx="1292" cy="640" r="1.9" opacity="0.34"/>
+      <circle cx="1104" cy="772" r="2.7" opacity="0.38"/>
+      <circle cx="662"  cy="930" r="1.7" opacity="0.34"/>
+      <circle cx="1468" cy="892" r="2.1" opacity="0.26"/>
+      <circle cx="342"  cy="560" r="1.6" opacity="0.22"/>
+      <circle cx="1622" cy="700" r="1.5" opacity="0.20"/>
+      <circle cx="880"  cy="618" r="1.8" opacity="0.24"/>
+      <circle cx="1010" cy="980" r="2.2" opacity="0.30"/>
+      <circle cx="760"  cy="1050" r="1.9" opacity="0.26"/>
+    </g>
+
+    <rect width="1800" height="1200" fill="url(#trama)" opacity="0.55"/>
+
+    <!-- laterais e teto escuros, leito para o texto -->
+    <rect x="0" y="0" width="560" height="1200" fill="url(#cortinaEsq)"/>
+    <rect x="1240" y="0" width="560" height="1200" fill="url(#cortinaDir)"/>
+    <rect width="1800" height="1200" fill="url(#teto)"/>
+    <rect width="1800" height="1200" fill="url(#leito)"/>
+    <rect width="1800" height="1200" fill="url(#vinheta)"/>
+
+    <rect width="1800" height="1200" filter="url(#grao)" opacity="0.11" style="mix-blend-mode:overlay"/>
+  </g>
+</svg>
